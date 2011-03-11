@@ -8,15 +8,24 @@ class Capacity(object):
         self.bits = bits
     def __hash__(self):
         return hash(self.bits)
-    ## Equality, python 3 style...
+    ## Equality and comparison, python 3 style. We don't rely on __cmp__ or cmp.
+    def _compare(self, other):
+        return (self - other).bits
     def __eq__(self, other):
-        if not isinstance(other, Capacity):
+        try:
+            return self._compare(other) == 0
+        except TypeError:
             return False
-        return self.bits == other.bits
+    def __ne__(self, other):
+        return not (self == other)
     def __lt__(self, other):
-        if not isinstance(other, Capacity):
-            raise TypeError("Cannot compare Capacity and %r objects" % (other,))
-        return self.bits < other.bits
+        return self._compare(other) < 0
+    def __gt__(self, other):
+        return self._compare(other) > 0
+    def __le__(self, other):
+        return self._compare(other) <= 0
+    def __ge__(self, other):
+        return self._compare(other) >= 0
     ## Arithmetic
     def __mul__(self, other):
         if not isinstance(other, Number):
