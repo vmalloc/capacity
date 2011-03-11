@@ -114,3 +114,5 @@ class InvalidArithmeticTest(TestCase):
             size > 2
         with self.assertRaises(ZeroDivisionError):
             size / 0
+        with self.assertRaises(ZeroDivisionError):
+            size % 0
