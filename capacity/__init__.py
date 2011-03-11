@@ -1,5 +1,4 @@
 __version__ = "0.0.1"
-from numbers import Number
 import operator
 
 class Capacity(object):
@@ -64,6 +63,8 @@ class Capacity(object):
         if self % boundary != 0:
             returned += boundary
         return returned
+    def rounddown(self, boundary):
+        return (self // boundary) * boundary
     def _arithmetic_to_number(self, operator, operand, allow_nonzero_ints=False):
         if not isinstance(operand, Capacity):
             if not allow_nonzero_ints and operand != 0:

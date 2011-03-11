@@ -1,5 +1,4 @@
 from unittest import TestCase
-from numbers import Integral
 from capacity import *
 
 class CapacityTest(TestCase):
@@ -94,6 +93,10 @@ class CapacityArithmeticTest(TestCase):
     def test__roundup(self):
         self.assertEquals(MiB.roundup(MiB), MiB)
         self.assertEquals((MiB + bit).roundup(MiB), 2 * MiB)
+    def test__rounddown(self):
+        self.assertEquals(MiB.rounddown(MiB), MiB)
+        self.assertEquals((MiB - bit).rounddown(MiB), 0)
+        self.assertEquals((3 * MiB - bit).rounddown(MiB), 2 * MiB)
 class InvalidArithmeticTest(TestCase):
     def test__invalid_arithmetic(self):
         size = 668 * bit
