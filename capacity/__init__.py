@@ -1,3 +1,4 @@
+from __future__ import division
 __version__ = "0.0.1"
 import operator
 
@@ -45,10 +46,15 @@ class Capacity(object):
         if isinstance(other, Capacity):
             return self._arithmetic_to_number(operator.div, other)
         return self._arithmetic_to_capacity(operator.div, other, allow_nonzero_ints=True)
+    def __truediv__(self, other):
+        if isinstance(other, Capacity):
+            return self._arithmetic_to_number(operator.truediv, other)
+        return self._arithmetic_to_capacity(operator.truediv, other, allow_nonzero_ints=True)
     def __rdiv__(self, other):
         if other == 0:
             return 0
-        raise TypeError("Attempt to divide %r object by Capacity" % (other,))
+        raise TypeError("Attempt to divide %r by Capacity" % (other,))
+    __rtruediv__ = __rdiv__
     __rfloordiv__ = __rdiv__
     def __floordiv__(self, other):
         return self._arithmetic_to_number(operator.floordiv, other, allow_nonzero_ints=True)
@@ -57,7 +63,7 @@ class Capacity(object):
     def __rmod__(self, other):
         if other == 0:
             return self
-        raise TypeError("Attempt to perform modulo of %r object by Capacity" % (other,))
+        raise TypeError("Attempt to perform modulo of %r by Capacity" % (other,))
     def roundup(self, boundary):
         returned = (self // boundary) * boundary
         if self % boundary != 0:
@@ -68,23 +74,32 @@ class Capacity(object):
     def _arithmetic_to_number(self, operator, operand, allow_nonzero_ints=False):
         if not isinstance(operand, Capacity):
             if not allow_nonzero_ints and operand != 0:
-                raise TypeError("Attempt to perform %s operation between capacity and %r object" % (operator.__name__, operand))
+                raise TypeError("Attempt to perform %s operation between capacity and %r" % (operator.__name__, operand))
             operand = Capacity(operand)
         return operator(self.bits, operand.bits)
     def _arithmetic_to_capacity(self, *args, **kwargs):
         return Capacity(self._arithmetic_to_number(*args, **kwargs))
     ## Representation
     def __str__(self):
-        return '{0} bit'.format(self.bits)
+        if self < byte:
+            return self._format_as_number_of_bits()
+        for name, unit in reversed(_SORTED_CAPACITIES):
+            if self % unit == 0:
+                return '{0}*{1}'.format(self // unit, name)
+            if unit * 0.1 < self < unit * 0.9:
+                return '{0:.1}*{1}'.format(self/unit, name)
+        return self._format_as_number_of_bits()
+    def _format_as_number_of_bits(self):
+        return '{0}*bit'.format(self.bits)
     def __repr__(self):
         return str(self)
 
-KNOWN_CAPACITIES = {}
+_KNOWN_CAPACITIES = {}
 
 __all__ = ['Capacity']
 
 def _add_known_capacity(name, capacity):
-    KNOWN_CAPACITIES[name] = capacity
+    _KNOWN_CAPACITIES[name] = capacity
     globals()[name] = capacity
     __all__.append(name)
 
@@ -99,3 +114,4 @@ for multiplier, chain in [
     for name in chain:
         _add_known_capacity(name, current)
         current *= multiplier
+_SORTED_CAPACITIES = sorted(_KNOWN_CAPACITIES.iteritems(), key=lambda (name, value): value)

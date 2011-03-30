@@ -1,5 +1,6 @@
 from unittest import TestCase
 from capacity import *
+from operator import truediv
 
 class CapacityTest(TestCase):
     def test__bits_attribute(self):
@@ -48,11 +49,18 @@ class CapacityTest(TestCase):
 
 class RepresentationTest(TestCase):
     def test__simple_textual_representation(self):
-        self._assert_str_of_equals(bit, '1 bit')
-        self._assert_repr_of_equals(bit, '1 bit')
-    def _assert_str_of_equals(self, obj, value):
+        self._assert_str_repr_equals(bit, '1*bit')
+        self._assert_str_repr_equals(bit, '1*bit')
+    def test__representation(self):
+        self._assert_str_repr_equals(0.5 * MiB, '0.5*MiB')
+        self._assert_str_repr_equals(0.5 * MiB + bit, '0.5*MiB')
+        self._assert_str_repr_equals(0.5 * MiB - bit, '0.5*MiB')
+        self._assert_str_repr_equals(2 * MiB, '2*MiB')
+        self._assert_str_repr_equals(GiB-bit, '{0}*bit'.format(GiB.bits-1))
+        self._assert_str_repr_equals(GiB-0.5*bit, '{0}*bit'.format(GiB.bits-0.5))
+
+    def _assert_str_repr_equals(self, obj, value):
         self.assertEquals(str(obj), value)
-    def _assert_repr_of_equals(self, obj, value):
         self.assertEquals(repr(obj), value)
 
 class CapacityArithmeticTest(TestCase):
@@ -80,13 +88,21 @@ class CapacityArithmeticTest(TestCase):
         self.assertEquals(2 * MiB, Capacity(MiB.bits * 2))
         self.assertEquals(0 * MiB, Capacity(0))
     def test__div(self):
+        self.assertEquals(MiB / 2, 0.5 * MiB)
         self.assertEquals((2 * MiB) / 2, MiB)
         self.assertEquals((1.5 * MiB) / MiB, 1.5)
         self.assertEquals((2 * MiB) / MiB, 2)
         self.assertEquals(0/MiB, 0)
+    def test__truediv(self):
+        self.assertEquals(truediv(MiB,2), 0.5 * MiB)
+        self.assertEquals(truediv(2 * MiB, 2), MiB)
+        self.assertEquals(truediv(1.5 * MiB, MiB), 1.5)
+        self.assertEquals(truediv(2 * MiB,MiB), 2)
+        self.assertEquals(truediv(0, MiB), 0)
     def test__mod(self):
         self.assertEquals(((2 * MiB) + bit) % MiB, bit)
         self.assertEquals(0 % MiB, MiB)
+        self.assertEquals(((0.5 * MiB) % (0.5 * MiB)), 0)
     def test__floordiv(self):
         self.assertEquals(((2 * MiB)+bit) // MiB, 2)
         self.assertEquals(0 // MiB, 0)
