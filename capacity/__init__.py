@@ -1,5 +1,5 @@
 from __future__ import division
-__version__ = "0.0.1"
+from .__version__ import __version__
 import math
 import operator
 

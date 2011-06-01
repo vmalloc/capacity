@@ -1,7 +1,8 @@
+import os
+from setuptools import setup, find_packages
 
-from distutils.core import setup
-
-from capacity import __version__ as VERSION
+with open(os.path.join(os.path.dirname(__file__), "capacity", "__version__.py")) as version_file:
+    exec version_file.read()
 
 setup(name="capacity",
       classifiers = [
@@ -14,7 +15,7 @@ setup(name="capacity",
       license="BSD",
       author="Rotem Yaari",
       author_email="vmalloc@gmail.com",
-      version=VERSION,
-      packages=["capacity"],
+      version=__version__,
+      packages=find_packages(exclude=["tests"]),
       scripts=[],
       )
