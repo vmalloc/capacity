@@ -1,5 +1,6 @@
 from __future__ import division
 __version__ = "0.0.1"
+import math
 import operator
 
 class Capacity(object):
@@ -57,7 +58,12 @@ class Capacity(object):
     __rtruediv__ = __rdiv__
     __rfloordiv__ = __rdiv__
     def __floordiv__(self, other):
-        return self._arithmetic_to_number(operator.floordiv, other, allow_nonzero_ints=True)
+        returned = self / other
+        if isinstance(other, Capacity):
+            returned = math.floor(returned)
+        else:
+            returned.bits = math.floor(returned.bits)
+        return returned
     def __mod__(self, other):
         return self._arithmetic_to_capacity(operator.mod, other)
     def __rmod__(self, other):
@@ -85,7 +91,7 @@ class Capacity(object):
             return self._format_as_number_of_bits()
         for name, unit in reversed(_SORTED_CAPACITIES):
             if self % unit == 0:
-                return '{0}*{1}'.format(self // unit, name)
+                return '{0}*{1}'.format(int(self // unit), name)
             if unit * 0.1 < self < unit * 0.9:
                 return '{0:.1}*{1}'.format(self/unit, name)
         return self._format_as_number_of_bits()

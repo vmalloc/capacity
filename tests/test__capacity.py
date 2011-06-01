@@ -89,6 +89,7 @@ class CapacityArithmeticTest(TestCase):
         self.assertEquals(0 * MiB, Capacity(0))
     def test__div(self):
         self.assertEquals(MiB / 2, 0.5 * MiB)
+        self.assertEquals(GB / 10, 100 * MB)
         self.assertEquals((2 * MiB) / 2, MiB)
         self.assertEquals((1.5 * MiB) / MiB, 1.5)
         self.assertEquals((2 * MiB) / MiB, 2)
@@ -105,6 +106,8 @@ class CapacityArithmeticTest(TestCase):
         self.assertEquals(((0.5 * MiB) % (0.5 * MiB)), 0)
     def test__floordiv(self):
         self.assertEquals(((2 * MiB)+bit) // MiB, 2)
+        self.assertEquals((2 * MiB) // 2, MiB)
+        self.assertEquals((2.001 * MiB) // 2, 8392802 * bit)
         self.assertEquals(0 // MiB, 0)
     def test__roundup(self):
         self.assertEquals(MiB.roundup(MiB), MiB)
