@@ -113,8 +113,8 @@ _add_known_capacity('bit', Capacity(1))
 _add_known_capacity('byte', 8 * bit)
 
 for multiplier, chain in [
-    (1024, ['KiB', 'MiB', 'GiB', 'TiB', 'XiB']),
-    (1000, ['KB', 'MB', 'GB', 'TB', 'XB']),
+    (1024, ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB]),
+    (1000, ['KB', 'MB', 'GB', 'TB', 'PB', 'EB']),
     ]:
     current = multiplier * byte
     for name in chain:
