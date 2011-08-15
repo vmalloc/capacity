@@ -138,3 +138,24 @@ class InvalidArithmeticTest(TestCase):
             size / 0
         with self.assertRaises(ZeroDivisionError):
             size % 0
+
+class FromStringTest(TestCase):
+    def test__from_string(self):
+        check = self._assert_from_string_equals
+        check("GiB", GiB)
+        check("MiB", MiB)
+        for variant in ("2*GiB", "2GiB", "2* GiB", "2 *GiB"):
+            check(variant, 2 * GiB)
+    def test__invalid_patterns(self):
+        check = self._assert_value_error
+        check("2")
+        check("bla")
+        check("GIB")
+        check("1*GiB*bla")
+        check("1+2")
+        check("1*2")
+    def _assert_from_string_equals(self, s, value):
+        self.assertEquals(from_string(s), value)
+    def _assert_value_error(self, s):
+        with self.assertRaises(ValueError):
+            from_string(s)
