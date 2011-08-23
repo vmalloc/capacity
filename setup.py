@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 with open(os.path.join(os.path.dirname(__file__), "capacity", "__version__.py")) as version_file:
-    exec version_file.read()
+    exec(version_file.read())
 
 setup(name="capacity",
       classifiers = [

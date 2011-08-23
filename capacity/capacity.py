@@ -9,6 +9,8 @@ class Capacity(object):
         self.bits = bits
     def __nonzero__(self):
         return bool(self.bits)
+    def __bool__(self):
+        return self.__nonzero__()
     def __hash__(self):
         return hash(self.bits)
     ## Equality and comparison, python 3 style. We don't rely on __cmp__ or cmp.
@@ -122,4 +124,4 @@ for multiplier, chain in [
     for name in chain:
         _add_known_capacity(name, current)
         current *= multiplier
-_SORTED_CAPACITIES = sorted(_KNOWN_CAPACITIES.iteritems(), key=lambda (name, value): value)
+_SORTED_CAPACITIES = sorted(_KNOWN_CAPACITIES.items(), key=lambda pair: pair[1])

@@ -1,4 +1,8 @@
-from unittest import TestCase
+import platform
+if platform.python_version() >= '2.7':
+    from unittest import TestCase
+else:
+    from unittest2 import TestCase
 from capacity import *
 from operator import truediv
 
