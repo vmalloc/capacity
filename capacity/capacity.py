@@ -7,6 +7,8 @@ class Capacity(object):
     def __init__(self, bits):
         super(Capacity, self).__init__()
         self.bits = bits
+    def __nonzero__(self):
+        return bool(self.bits)
     def __hash__(self):
         return hash(self.bits)
     ## Equality and comparison, python 3 style. We don't rely on __cmp__ or cmp.

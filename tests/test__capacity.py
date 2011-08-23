@@ -3,6 +3,10 @@ from capacity import *
 from operator import truediv
 
 class CapacityTest(TestCase):
+    def test__truth(self):
+        self.assertTrue(bool(byte))
+        self.assertTrue(bool(GiB))
+        self.assertFalse(bool(0 * byte))
     def test__bits_attribute(self):
         self.assertEquals((666 * bit).bits, 666)
     def test__hashability(self):
