@@ -4,6 +4,7 @@ if platform.python_version() >= '2.7':
 else:
     from unittest2 import TestCase
 from capacity import *
+from numbers import Integral
 from operator import truediv
 
 class CapacityTest(TestCase):
@@ -102,19 +103,24 @@ class CapacityArithmeticTest(TestCase):
         self.assertEquals((1.5 * MiB) / MiB, 1.5)
         self.assertEquals((2 * MiB) / MiB, 2)
         self.assertEquals(0/MiB, 0)
+        self.assertEquals((2*MiB) / MiB, 2)
     def test__truediv(self):
         self.assertEquals(truediv(MiB,2), 0.5 * MiB)
         self.assertEquals(truediv(2 * MiB, 2), MiB)
         self.assertEquals(truediv(1.5 * MiB, MiB), 1.5)
         self.assertEquals(truediv(2 * MiB,MiB), 2)
         self.assertEquals(truediv(0, MiB), 0)
+        self.assertEquals(truediv(2*MiB, MiB), 2)
     def test__mod(self):
         self.assertEquals(((2 * MiB) + bit) % MiB, bit)
         self.assertEquals(0 % MiB, MiB)
         self.assertEquals(((0.5 * MiB) % (0.5 * MiB)), 0)
     def test__floordiv(self):
         self.assertEquals(((2 * MiB)+bit) // MiB, 2)
+        self.assertIsInstance(((2 * MiB)+bit) // MiB, Integral)
         self.assertEquals((2 * MiB) // 2, MiB)
+        self.assertEquals((2 * MiB) // MiB, 2)
+        self.assertIsInstance((2 * MiB) // MiB, Integral)
         self.assertEquals((2.001 * MiB) // 2, 8392802 * bit)
         self.assertEquals(0 // MiB, 0)
     def test__roundup(self):

@@ -2,6 +2,7 @@ from __future__ import division
 from .__version__ import __version__
 import math
 import operator
+from numbers import Number
 
 class Capacity(object):
     def __init__(self, bits):
@@ -67,6 +68,8 @@ class Capacity(object):
             returned = math.floor(returned)
         else:
             returned.bits = math.floor(returned.bits)
+        if isinstance(returned, Number):
+            returned = int(returned)
         return returned
     def __mod__(self, other):
         return self._arithmetic_to_capacity(operator.mod, other)
