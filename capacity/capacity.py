@@ -96,16 +96,34 @@ class Capacity(object):
     def __str__(self):
         if self < byte:
             return self._format_as_number_of_bits()
+        result = None
         for name, unit in reversed(_SORTED_CAPACITIES):
-            if self % unit == 0:
-                return '{0}*{1}'.format(int(self // unit), name)
-            if unit * 0.1 < self < unit * 0.9:
-                return '{0:.1}*{1}'.format(self/unit, name)
+            if unit * 0.1 > self:
+                continue
+            unit_fraction = self / unit
+            # use at most 2 precision points
+            rounded_fraction = round(unit_fraction, 2)
+            # whole numbers should still be whole
+            rounded_fraction = int(rounded_fraction) if rounded_fraction.is_integer() else rounded_fraction
+            current_result = '{0}*{1}'.format(rounded_fraction, name)
+            if result is not None:
+                # switch to current result if it is more compact (e.g. 0.5MB < 0.49MiB)
+                return result if len(result.split("*")[0]) <= len(current_result.split("*")[0]) else current_result
+            # continue with result to next iteration to check for better representation
+            result = current_result
+        if result is not None:
+            return result
         return self._format_as_number_of_bits()
     def _format_as_number_of_bits(self):
-        return '{0}*bit'.format(self.bits)
+        bits = self.bits
+        if isinstance(bits, float) and bits.is_integer():
+            bits = int(bits)
+        return '{0}*bit'.format(bits)
     def __repr__(self):
-        return str(self)
+        for name, unit in reversed(_SORTED_CAPACITIES):
+            if self % unit == 0:
+                return '{0}*{1}'.format(self // unit, name)
+        return self._format_as_number_of_bits()
 
 _KNOWN_CAPACITIES = {}
 

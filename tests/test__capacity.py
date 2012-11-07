@@ -58,19 +58,32 @@ class CapacityTest(TestCase):
 
 class RepresentationTest(TestCase):
     def test__simple_textual_representation(self):
-        self._assert_str_repr_equals(bit, '1*bit')
-        self._assert_str_repr_equals(bit, '1*bit')
+        self._assert_str_repr_equals(bit, '1*bit', '1*bit')
+        self._assert_str_repr_equals(bit, '1*bit', '1*bit')
     def test__representation(self):
-        self._assert_str_repr_equals(0.5 * MiB, '0.5*MiB')
-        self._assert_str_repr_equals(0.5 * MiB + bit, '0.5*MiB')
-        self._assert_str_repr_equals(0.5 * MiB - bit, '0.5*MiB')
-        self._assert_str_repr_equals(2 * MiB, '2*MiB')
-        self._assert_str_repr_equals(GiB-bit, '{0}*bit'.format(GiB.bits-1))
-        self._assert_str_repr_equals(GiB-0.5*bit, '{0}*bit'.format(GiB.bits-0.5))
+        self._assert_str_repr_equals(0.5 * MiB, '0.5*MiB', '512*KiB')
+        self._assert_str_repr_equals(0.5 * MiB + bit, '0.5*MiB', '{0}*bit'.format(int((0.5 * MiB).bits+1)))
+        self._assert_str_repr_equals(0.5 * MiB - bit, '0.5*MiB', '{0}*bit'.format(int((0.5 * MiB).bits-1)))
+        self._assert_str_repr_equals(2 * MiB, '2*MiB', '2*MiB')
+        self._assert_str_repr_equals(GiB-bit, '1*GiB', '{0}*bit'.format(GiB.bits-1))
+        self._assert_str_repr_equals(GiB-0.5*bit, '1*GiB', '{0}*bit'.format(GiB.bits-0.5))
+        
+        # fractions with two decimal places
+        self._assert_str_repr_equals(0.99 * KiB, '0.99*KiB', '{0}*bit'.format(0.99*1024*8))
+        self._assert_str_repr_equals(0.59 * MiB, '0.59*MiB', '{0}*bit'.format(0.59*1024*1024*8))
+        # fractions with multiple decimal places
+        self._assert_str_repr_equals(9122 * byte, '8.91*KiB', '9122*byte')
+        self._assert_str_repr_equals(23124232 * byte, '22.05*MiB', '23124232*byte')
+        self._assert_str_repr_equals(58918694226 * byte, '54.87*GiB', '58918694226*byte')
+        self._assert_str_repr_equals(213124232 * byte, '0.2*GiB', '213124232*byte')
+        # test *B instead of only *iB
+        self._assert_str_repr_equals(0.5 * MB - bit, '0.5*MB', '{0}*bit'.format(int((0.5 * MB).bits-1)))
+        self._assert_str_repr_equals(0.5 * MB, '0.5*MB', '500*KB')
+        self._assert_str_repr_equals(2 * MB, '2*MB', '2*MB')
 
-    def _assert_str_repr_equals(self, obj, value):
-        self.assertEquals(str(obj), value)
-        self.assertEquals(repr(obj), value)
+    def _assert_str_repr_equals(self, obj, str_value, repr_value):
+        self.assertEquals(str(obj), str_value)
+        self.assertEquals(repr(obj), repr_value)
 
 class CapacityArithmeticTest(TestCase):
     def test__add(self):
