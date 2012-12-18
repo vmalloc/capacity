@@ -67,7 +67,7 @@ class RepresentationTest(TestCase):
         self._assert_str_repr_equals(2 * MiB, '2*MiB', '2*MiB')
         self._assert_str_repr_equals(GiB-bit, '1*GiB', '{0}*bit'.format(GiB.bits-1))
         self._assert_str_repr_equals(GiB-0.5*bit, '1*GiB', '{0}*bit'.format(GiB.bits-0.5))
-        
+
         # fractions with two decimal places
         self._assert_str_repr_equals(0.99 * KiB, '0.99*KiB', '{0}*bit'.format(0.99*1024*8))
         self._assert_str_repr_equals(0.59 * MiB, '0.59*MiB', '{0}*bit'.format(0.59*1024*1024*8))
@@ -94,6 +94,9 @@ class CapacityArithmeticTest(TestCase):
         a = MiB
         a += MiB
         self.assertEquals(a, 2 * MiB)
+    def test__abs(self):
+        self.assertEquals(abs(-MiB), MiB)
+        self.assertEquals(abs(MiB), MiB)
     def test__sub(self):
         self.assertEquals(MiB - bit, Capacity(MiB.bits - 1))
         self.assertEquals(0 - bit, -bit)

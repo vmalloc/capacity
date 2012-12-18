@@ -33,6 +33,8 @@ class Capacity(object):
     def __ge__(self, other):
         return self._compare(other) >= 0
     ## Arithmetic
+    def __abs__(self):
+        return Capacity(abs(self.bits))
     def __neg__(self):
         return Capacity(-self.bits)
     def __mul__(self, other):
