@@ -81,6 +81,8 @@ class RepresentationTest(TestCase):
         self._assert_str_repr_equals(0.5 * MB, '0.5*MB', '500*KB')
         self._assert_str_repr_equals(2 * MB, '2*MB', '2*MB')
 
+        self._assert_str_repr_equals(0 * bit, '0*bit', '0*bit')
+
     def _assert_str_repr_equals(self, obj, str_value, repr_value):
         self.assertEquals(str(obj), str_value)
         self.assertEquals(repr(obj), repr_value)

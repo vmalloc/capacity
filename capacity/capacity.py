@@ -122,6 +122,8 @@ class Capacity(object):
             bits = int(bits)
         return '{0}*bit'.format(bits)
     def __repr__(self):
+        if self.bits == 0:
+            return self._format_as_number_of_bits()
         for name, unit in reversed(_SORTED_CAPACITIES):
             if self % unit == 0:
                 return '{0}*{1}'.format(self // unit, name)
