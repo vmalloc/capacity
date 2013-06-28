@@ -1,12 +1,14 @@
 from __future__ import division
-from .__version__ import __version__
 import math
+import re
 import operator
 from numbers import Number
 
 class Capacity(object):
     def __init__(self, bits):
         super(Capacity, self).__init__()
+        if isinstance(bits, str):
+            bits = from_string(bits).bits
         self.bits = bits
     def __nonzero__(self):
         return bool(self.bits)
@@ -150,3 +152,23 @@ for multiplier, chain in [
         _add_known_capacity(name, current)
         current *= multiplier
 _SORTED_CAPACITIES = sorted(_KNOWN_CAPACITIES.items(), key=lambda pair: pair[1])
+
+# parsing
+
+_CAPACITY_PATTERN = re.compile(r"^([0-9\.]+)\s*\*?\s*(.+)$")
+
+def _get_known_capacity(s):
+    return _KNOWN_CAPACITIES.get(s, None)
+
+def from_string(s):
+    if s in _KNOWN_CAPACITIES:
+        return _KNOWN_CAPACITIES[s]
+    match = _CAPACITY_PATTERN.match(s)
+    if not match:
+        raise ValueError(s)
+    amount = float(match.group(1))
+    unit = _get_known_capacity(match.group(2))
+    if unit is None:
+        raise ValueError(s)
+    return amount * unit
+

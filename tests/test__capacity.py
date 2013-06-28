@@ -172,6 +172,8 @@ class InvalidArithmeticTest(TestCase):
             size % 0
 
 class FromStringTest(TestCase):
+    def test__from_string_construction(self):
+        self.assertEquals(Capacity("20*GiB"), 20*GiB)
     def test__from_string(self):
         check = self._assert_from_string_equals
         check("GiB", GiB)
