@@ -1,11 +1,14 @@
-import platform
-if platform.python_version() >= '2.7':
-    from unittest import TestCase
-else:
+import sys
+import decimal
+_PY_2_6 = sys.version_info < (2, 7)
+if _PY_2_6:
     from unittest2 import TestCase
+else:
+    from unittest import TestCase
 from capacity import *
 from numbers import Integral
 from operator import truediv
+
 
 class CapacityTest(TestCase):
 
@@ -79,7 +82,7 @@ class RepresentationTest(TestCase):
         self._assert_str_repr_equals(
             GiB - bit, '1*GiB', '{0}*bit'.format(GiB.bits - 1))
         self._assert_str_repr_equals(
-            GiB - 0.5 * bit, '1*GiB', '{0}*bit'.format(GiB.bits - 0.5))
+            GiB - 0.5 * bit, '1*GiB', '{0}*bit'.format(GiB.bits - decimal.Decimal("0.5")))
 
         # fractions with two decimal places
         self._assert_str_repr_equals(
@@ -146,7 +149,11 @@ class CapacityArithmeticTest(TestCase):
         self.assertEquals(MiB / 2, 0.5 * MiB)
         self.assertEquals(GB / 10, 100 * MB)
         self.assertEquals((2 * MiB) / 2, MiB)
-        self.assertEquals((1.5 * MiB) / MiB, 1.5)
+        if _PY_2_6:
+            # in Python 2.6 decimal equality is a bit broken
+            self.assertEquals((1.5 * MiB) / MiB, decimal.Decimal("1.5"))
+        else:
+            self.assertEquals((1.5 * MiB) / MiB, 1.5)
         self.assertEquals((2 * MiB) / MiB, 2)
         self.assertEquals(0 / MiB, 0)
         self.assertEquals((2 * MiB) / MiB, 2)
@@ -154,7 +161,11 @@ class CapacityArithmeticTest(TestCase):
     def test__truediv(self):
         self.assertEquals(truediv(MiB, 2), 0.5 * MiB)
         self.assertEquals(truediv(2 * MiB, 2), MiB)
-        self.assertEquals(truediv(1.5 * MiB, MiB), 1.5)
+        if _PY_2_6:
+            # in Python 2.6 decimal equality is a bit broken
+            self.assertEquals(truediv(1.5 * MiB, MiB), decimal.Decimal("1.5"))
+        else:
+            self.assertEquals(truediv(1.5 * MiB, MiB), 1.5)
         self.assertEquals(truediv(2 * MiB, MiB), 2)
         self.assertEquals(truediv(0, MiB), 0)
         self.assertEquals(truediv(2 * MiB, MiB), 2)
@@ -204,7 +215,7 @@ class InvalidArithmeticTest(TestCase):
             size > 2
         with self.assertRaises(ZeroDivisionError):
             size / 0
-        with self.assertRaises(ZeroDivisionError):
+        with self.assertRaises(decimal.InvalidOperation):
             size % 0
 
 
@@ -212,6 +223,9 @@ class FromStringTest(TestCase):
 
     def test__from_string_construction(self):
         self.assertEquals(Capacity("20*GiB"), 20 * GiB)
+
+    def test__from_string_fractions(self):
+        self.assertEquals(Capacity("1119.63 * TB"), 1119630*GB)
 
     def test__from_string(self):
         check = self._assert_from_string_equals

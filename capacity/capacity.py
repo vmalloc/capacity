@@ -1,14 +1,22 @@
 from __future__ import division
+import decimal
 import math
 import re
+import sys
 import operator
 from numbers import Number
+
+_PY_2_6 =  sys.version_info < (2, 7)
 
 class Capacity(object):
     def __init__(self, bits):
         super(Capacity, self).__init__()
         if isinstance(bits, str):
             bits = from_string(bits).bits
+        if not isinstance(bits, decimal.Decimal):
+            if _PY_2_6 and isinstance(bits, float):
+                bits = str(bits)
+            bits = decimal.Decimal(bits)
         self.bits = bits
     def __nonzero__(self):
         return bool(self.bits)
@@ -71,7 +79,7 @@ class Capacity(object):
         if isinstance(other, Capacity):
             returned = math.floor(returned)
         else:
-            returned.bits = math.floor(returned.bits)
+            returned.bits = returned.bits.to_integral()
         if isinstance(returned, Number):
             returned = int(returned)
         return returned
@@ -108,7 +116,8 @@ class Capacity(object):
             # use at most 2 precision points
             rounded_fraction = round(unit_fraction, 2)
             # whole numbers should still be whole
-            rounded_fraction = int(rounded_fraction) if rounded_fraction.is_integer() else rounded_fraction
+            rounded_fraction = int(rounded_fraction) if _is_integral(rounded_fraction) else float(rounded_fraction)
+
             current_result = '{0}*{1}'.format(rounded_fraction, name)
             if result is not None:
                 # switch to current result if it is more compact (e.g. 0.5MB < 0.49MiB)
@@ -120,8 +129,10 @@ class Capacity(object):
         return self._format_as_number_of_bits()
     def _format_as_number_of_bits(self):
         bits = self.bits
-        if isinstance(bits, float) and bits.is_integer():
+        if _is_integral(bits):
             bits = int(bits)
+        else:
+            bits = float(bits)
         return '{0}*bit'.format(bits)
     def __repr__(self):
         if self.bits == 0:
@@ -166,9 +177,13 @@ def from_string(s):
     match = _CAPACITY_PATTERN.match(s)
     if not match:
         raise ValueError(s)
-    amount = float(match.group(1))
+    amount = decimal.Decimal(match.group(1))
     unit = _get_known_capacity(match.group(2))
     if unit is None:
         raise ValueError(s)
     return amount * unit
 
+def _is_integral(x):
+    if isinstance(x, float):
+        return x.is_integer()
+    return x.to_integral() == x
