@@ -1,4 +1,5 @@
 from __future__ import division
+import decimal
 import math
 import re
 import operator
@@ -166,9 +167,14 @@ def from_string(s):
     match = _CAPACITY_PATTERN.match(s)
     if not match:
         raise ValueError(s)
-    amount = float(match.group(1))
+    amount = decimal.Decimal(match.group(1))
     unit = _get_known_capacity(match.group(2))
     if unit is None:
         raise ValueError(s)
-    return amount * unit
+    num_bits = amount * unit.bits
+    if num_bits.to_integral() == num_bits:
+        num_bits = int(num_bits)
+    else:
+        num_bits = float(num_bits)
+    return Capacity(num_bits)
 

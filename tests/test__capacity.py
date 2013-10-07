@@ -1,11 +1,13 @@
-import platform
-if platform.python_version() >= '2.7':
-    from unittest import TestCase
-else:
+import sys
+_PY_2_6 = sys.version_info < (2, 7)
+if _PY_2_6:
     from unittest2 import TestCase
+else:
+    from unittest import TestCase
 from capacity import *
 from numbers import Integral
 from operator import truediv
+
 
 class CapacityTest(TestCase):
 
@@ -212,6 +214,9 @@ class FromStringTest(TestCase):
 
     def test__from_string_construction(self):
         self.assertEquals(Capacity("20*GiB"), 20 * GiB)
+
+    def test__from_string_fractions(self):
+        self.assertEquals(Capacity("1119.63 * TB"), 1119630*GB)
 
     def test__from_string(self):
         check = self._assert_from_string_equals
