@@ -67,6 +67,12 @@ class CapacityTest(TestCase):
 
 class RepresentationTest(TestCase):
 
+    def test_new_style_formatting(self):
+        assert "{0:GiB}".format(3 * GiB) == "3"
+        with self.assertRaises(ValueError):
+            assert "{0:kjdkj}".format(3 * GiB)
+        assert u"{0:byte}".format(100*byte) == u"100"
+
     def test_simple_textual_representation(self):
         self._assert_str_repr_equals(bit, '1*bit', '1*bit')
         self._assert_str_repr_equals(bit, '1*bit', '1*bit')

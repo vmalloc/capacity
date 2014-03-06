@@ -161,6 +161,13 @@ class Capacity(object):
             bits = int(bits)
         return '{0}*bit'.format(bits)
 
+    def __format__(self, capacity):
+        c = _KNOWN_CAPACITIES.get(capacity)
+        if c is None:
+            raise ValueError("Invalid conversion specification")
+        return str(self // c)
+
+
     def __repr__(self):
         if self.bits == 0:
             return self._format_as_number_of_bits()
