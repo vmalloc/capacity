@@ -5,3 +5,4 @@ build
 dist
 capacity.egg-info
 .tox
+.env
