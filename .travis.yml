@@ -8,6 +8,6 @@ install:
   - pip install pytest pytest-cov coveralls
   - python setup.py develop
 # command to run tests, e.g. python setup.py test
-script: py.test --cov-path=capacity
+script: py.test --cov capacity
 after_success:
   coveralls
