@@ -1,4 +1,4 @@
-![Build Status] (https://secure.travis-ci.org/vmalloc/capacity.png ) &nbsp; ![Downloads] (https://pypip.in/d/capacity/badge.png ) &nbsp; ![Version] (https://pypip.in/v/capacity/badge.png )
+![Build Status] (https://secure.travis-ci.org/vmalloc/capacity.png ) &nbsp; ![Downloads] (https://pypip.in/d/capacity/badge.png ) &nbsp; ![Version] (https://pypip.in/v/capacity/badge.png ) &nbsp; ![Coverage] (https://coveralls.io/repos/vmalloc/slash/badge.png)
 
 # Overview
 
