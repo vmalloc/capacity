@@ -19,7 +19,7 @@ The above creates a capacity unit that represents 2GiB (2 * (1024<sup>3</sup>) b
 Capacity objects can be added, multiplied, divided and more:
 
 ```python
->>> size / GiB
+>>> size // GiB
 2
 
 >>> ((size * 2) / 3 * 12) % (13 * byte)
