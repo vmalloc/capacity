@@ -162,6 +162,8 @@ class Capacity(object):
         return '{0}*bit'.format(bits)
 
     def __format__(self, capacity):
+        if not capacity:
+            return str(self)
         c = _KNOWN_CAPACITIES.get(capacity)
         if c is None:
             raise ValueError("Invalid conversion specification")

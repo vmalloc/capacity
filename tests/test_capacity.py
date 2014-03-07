@@ -68,6 +68,8 @@ class CapacityTest(TestCase):
 class RepresentationTest(TestCase):
 
     def test_new_style_formatting(self):
+        assert "{0}".format(3 * GiB) == str(3 * GiB)
+        assert "{0!r}".format(3 * GiB) == repr(3 * GiB)
         assert "{0:GiB}".format(3 * GiB) == "3"
         with self.assertRaises(ValueError):
             assert "{0:kjdkj}".format(3 * GiB)
