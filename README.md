@@ -22,7 +22,7 @@ Capacity objects can be added, multiplied, divided and more:
 >>> size // GiB
 2
 
->>> ((size * 2) / 3 * 12) % (13 * byte)
+>>> ((size * 2) // 3 * 12) % (13 * byte)
 9*byte
 
 >>> (2.51 * GiB) // GiB
