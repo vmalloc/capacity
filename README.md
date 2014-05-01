@@ -50,6 +50,9 @@ Formatting is easy:
 >>> "In megabytes, we have {0:MB}".format(size)
 'In megabytes, we have 1'
 
+>>> "We have {0:MB!}".format(size) # include unit in output
+'We have 1MB'
+
 ```
 
 You can easily parse textual representations of sizes:

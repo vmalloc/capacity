@@ -165,20 +165,27 @@ class Capacity(object):
         if not capacity:
             return str(self)
         formatter, value = self._get_new_style_formatter_and_value(capacity)
-        return formatter(value)
+        returned = formatter(value)
+        return returned
 
     def _get_new_style_formatter_and_value(self, specifier):
-        capacity = _KNOWN_CAPACITIES.get(specifier)
+        include_unit = specifier.endswith("!")
+        if include_unit:
+            specifier = specifier[:-1]
+        unit_name = specifier
+        unit = _KNOWN_CAPACITIES.get(specifier)
         formatter = str
-        if capacity is None:
-            for capacity_name in _KNOWN_CAPACITIES:
-                if specifier.endswith(capacity_name):
-                    capacity = _KNOWN_CAPACITIES[capacity_name]
-                    formatter = "{{0:{0}}}".format(specifier[:-len(capacity_name)]).format
+        if unit is None:
+            for unit_name in _KNOWN_CAPACITIES:
+                if specifier.endswith(unit_name):
+                    unit = _KNOWN_CAPACITIES[unit_name]
+                    formatter = "{{0:{0}}}".format(specifier[:-len(unit_name)]).format
                     break
             else:
                 raise ValueError("Unknown specifier: {0}".format(specifier))
-        value = self // capacity
+        value = self // unit
+        if include_unit:
+            value = "{0}{1}".format(value, unit_name)
         return formatter, value
 
     def __repr__(self):

@@ -81,6 +81,9 @@ class RepresentationTest(TestCase):
         assert "{0:^5MiB}".format(MiB) == "  1  "
         assert "{0:05MiB}".format(MiB) == "00001"
 
+    def test_new_style_with_unit(self):
+        assert "{0:<5MiB!}".format(MiB) == "1MiB "
+
     def test_simple_textual_representation(self):
         self._assert_str_repr_equals(bit, '1*bit', '1*bit')
         self._assert_str_repr_equals(bit, '1*bit', '1*bit')
