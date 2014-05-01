@@ -75,6 +75,12 @@ class RepresentationTest(TestCase):
             assert "{0:kjdkj}".format(3 * GiB)
         assert u"{0:byte}".format(100*byte) == u"100"
 
+    def test_new_style_with_specifiers(self):
+        assert "{0:<5MiB}".format(MiB) == "1    "
+        assert "{0:>5MiB}".format(MiB) == "    1"
+        assert "{0:^5MiB}".format(MiB) == "  1  "
+        assert "{0:05MiB}".format(MiB) == "00001"
+
     def test_simple_textual_representation(self):
         self._assert_str_repr_equals(bit, '1*bit', '1*bit')
         self._assert_str_repr_equals(bit, '1*bit', '1*bit')
@@ -241,6 +247,7 @@ class FromStringTest(TestCase):
         check("1*GiB*bla")
         check("1+2")
         check("1*2")
+
 
     def _assert_from_string_equals(self, s, value):
         self.assertEquals(from_string(s), value)

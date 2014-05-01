@@ -164,11 +164,22 @@ class Capacity(object):
     def __format__(self, capacity):
         if not capacity:
             return str(self)
-        c = _KNOWN_CAPACITIES.get(capacity)
-        if c is None:
-            raise ValueError("Invalid conversion specification")
-        return str(self // c)
+        formatter, value = self._get_new_style_formatter_and_value(capacity)
+        return formatter(value)
 
+    def _get_new_style_formatter_and_value(self, specifier):
+        capacity = _KNOWN_CAPACITIES.get(specifier)
+        formatter = str
+        if capacity is None:
+            for capacity_name in _KNOWN_CAPACITIES:
+                if specifier.endswith(capacity_name):
+                    capacity = _KNOWN_CAPACITIES[capacity_name]
+                    formatter = "{{0:{0}}}".format(specifier[:-len(capacity_name)]).format
+                    break
+            else:
+                raise ValueError("Unknown specifier: {0}".format(specifier))
+        value = self // capacity
+        return formatter, value
 
     def __repr__(self):
         if self.bits == 0:
