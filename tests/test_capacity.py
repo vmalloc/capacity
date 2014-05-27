@@ -4,6 +4,10 @@ from numbers import Integral
 from operator import truediv
 
 
+def test_0_modulo():
+    assert (0 % byte) == byte
+    assert ((0 * byte) % byte) == byte
+
 def test_truth():
     assert byte
     assert GiB

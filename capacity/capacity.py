@@ -100,6 +100,8 @@ class Capacity(object):
         return returned
 
     def __mod__(self, other):
+        if self == 0:
+            return other
         return self._arithmetic_to_capacity(operator.mod, other)
 
     def __rmod__(self, other):
