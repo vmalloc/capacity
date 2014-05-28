@@ -5,8 +5,8 @@ from operator import truediv
 
 
 def test_0_modulo():
-    assert (0 % byte) == byte
-    assert ((0 * byte) % byte) == byte
+    assert (0 % byte) == 0
+    assert ((0 * byte) % byte) == 0
 
 def test_truth():
     assert byte
@@ -192,7 +192,7 @@ def test_truediv():
 
 def test_mod():
     assert (((2 * MiB) + bit) % MiB) == bit
-    assert (0 % MiB) == MiB
+    assert (0 % MiB) == 0
     assert ((0.5 * MiB) % (0.5 * MiB)) == 0
 
 

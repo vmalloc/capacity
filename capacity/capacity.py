@@ -101,12 +101,12 @@ class Capacity(object):
 
     def __mod__(self, other):
         if self == 0:
-            return other
+            return 0
         return self._arithmetic_to_capacity(operator.mod, other)
 
     def __rmod__(self, other):
         if other == 0:
-            return self
+            return 0
         raise TypeError("Attempt to perform modulo of %r by Capacity" %
                         (other,))
 
