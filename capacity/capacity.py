@@ -210,7 +210,6 @@ def _add_known_capacity(name, capacity):
 
 _add_known_capacity('bit', Capacity(1))
 _add_known_capacity('byte', 8 * bit)
-_add_known_capacity('b', byte)
 
 for multiplier, chain in [
     (1024, ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB']),
@@ -226,7 +225,9 @@ _SORTED_CAPACITIES = sorted(
 # parsing
 
 _CAPACITY_PATTERN = re.compile(r"^([0-9\.]+)\s*\*?\s*(.+)$")
-
+_UNIT_ALIASES = {
+    'b': 'byte',
+}
 
 def _get_known_capacity(s):
     return _KNOWN_CAPACITIES.get(s, None)
@@ -239,7 +240,8 @@ def from_string(s):
     if not match:
         raise ValueError(s)
     amount = decimal.Decimal(match.group(1))
-    unit = _get_known_capacity(match.group(2))
+    unit_name = match.group(2)
+    unit = _get_known_capacity(_UNIT_ALIASES.get(unit_name, unit_name))
     if unit is None:
         raise ValueError(s)
     num_bits = amount * unit.bits
