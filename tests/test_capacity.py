@@ -8,6 +8,7 @@ def test_0_modulo():
     assert (0 % byte) == 0
     assert ((0 * byte) % byte) == 0
 
+
 def test_truth():
     assert byte
     assert GiB
@@ -248,12 +249,17 @@ def test_from_string_fractions():
     assert Capacity('1119.63 * TB') == (1119630 * GB)
 
 
-def test_from_string():
-    check = _assert_from_string_equals
-    check("GiB", GiB)
-    check("MiB", MiB)
-    for variant in ("2*GiB", "2GiB", "2* GiB", "2 *GiB"):
-        check(variant, 2 * GiB)
+@pytest.mark.parametrize('string_and_value', [
+    ('GiB', GiB),
+    ('MiB', MiB),
+    ("2*GiB", 2 * GiB),
+    ("2GiB", 2 * GiB),
+    ("2* GiB", 2 * GiB),
+    ("2 *GiB", 2 * GiB),
+])
+def test_from_string(string_and_value):
+    string, value = string_and_value
+    assert from_string(string) == value
 
 
 def test_invalid_patterns():
@@ -264,10 +270,6 @@ def test_invalid_patterns():
     check("1*GiB*bla")
     check("1+2")
     check("1*2")
-
-
-def _assert_from_string_equals(s, value):
-    assert from_string(s) == value
 
 
 def _assert_value_error(s):
