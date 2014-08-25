@@ -256,6 +256,8 @@ def test_from_string_fractions():
     ("2GiB", 2 * GiB),
     ("2* GiB", 2 * GiB),
     ("2 *GiB", 2 * GiB),
+    ("20b", 20 * byte),
+    ("20*b", 20 * byte),
 ])
 def test_from_string(string_and_value):
     string, value = string_and_value

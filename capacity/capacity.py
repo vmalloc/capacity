@@ -210,6 +210,7 @@ def _add_known_capacity(name, capacity):
 
 _add_known_capacity('bit', Capacity(1))
 _add_known_capacity('byte', 8 * bit)
+_add_known_capacity('b', byte)
 
 for multiplier, chain in [
     (1024, ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB']),
