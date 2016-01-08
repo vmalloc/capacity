@@ -94,6 +94,7 @@ def test_simple_textual_representation():
 
 
 def test_representation():
+    _assert_str_repr_equals(110 * MiB, '110 MiB', '110*MiB')
     _assert_str_repr_equals(0.5 * MiB, '0.5 MiB', '512*KiB')
     _assert_str_repr_equals(
         0.5 * MiB + bit, '0.5 MiB', '{0}*bit'.format(int((0.5 * MiB).bits + 1)))

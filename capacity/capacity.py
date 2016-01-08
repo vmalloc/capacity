@@ -136,7 +136,12 @@ class Capacity(object):
         if self < byte:
             return self._format_as_number_of_bits(with_asterisk=False)
         result = None
-        for name, unit in reversed(_SORTED_CAPACITIES):
+
+        for name, unit in _SORTED_CAPACITIES:
+            if KiB < unit < self and self % unit == 0:
+                return '{0} {1}'.format(self // unit, name)
+
+        for name, unit in reversed((_SORTED_CAPACITIES)):
             if unit * 0.1 > self:
                 continue
             unit_fraction = self / unit
