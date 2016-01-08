@@ -89,42 +89,42 @@ def test_new_style_with_unit():
 
 
 def test_simple_textual_representation():
-    _assert_str_repr_equals(bit, '1*bit', '1*bit')
-    _assert_str_repr_equals(bit, '1*bit', '1*bit')
+    _assert_str_repr_equals(bit, '1 bit', '1*bit')
+    _assert_str_repr_equals(bit, '1 bit', '1*bit')
 
 
 def test_representation():
-    _assert_str_repr_equals(0.5 * MiB, '0.5*MiB', '512*KiB')
+    _assert_str_repr_equals(0.5 * MiB, '0.5 MiB', '512*KiB')
     _assert_str_repr_equals(
-        0.5 * MiB + bit, '0.5*MiB', '{0}*bit'.format(int((0.5 * MiB).bits + 1)))
+        0.5 * MiB + bit, '0.5 MiB', '{0}*bit'.format(int((0.5 * MiB).bits + 1)))
     _assert_str_repr_equals(
-        0.5 * MiB - bit, '0.5*MiB', '{0}*bit'.format(int((0.5 * MiB).bits - 1)))
-    _assert_str_repr_equals(2 * MiB, '2*MiB', '2*MiB')
+        0.5 * MiB - bit, '0.5 MiB', '{0}*bit'.format(int((0.5 * MiB).bits - 1)))
+    _assert_str_repr_equals(2 * MiB, '2 MiB', '2*MiB')
     _assert_str_repr_equals(
-        GiB - bit, '1*GiB', '{0}*bit'.format(GiB.bits - 1))
+        GiB - bit, '1 GiB', '{0}*bit'.format(GiB.bits - 1))
     _assert_str_repr_equals(
-        GiB - 0.5 * bit, '1*GiB', '{0}*bit'.format(GiB.bits - 0.5))
+        GiB - 0.5 * bit, '1 GiB', '{0}*bit'.format(GiB.bits - 0.5))
 
     # fractions with two decimal places
     _assert_str_repr_equals(
-        0.99 * KiB, '0.99*KiB', '{0}*bit'.format(0.99 * 1024 * 8))
+        0.99 * KiB, '0.99 KiB', '{0}*bit'.format(0.99 * 1024 * 8))
     _assert_str_repr_equals(
-        0.59 * MiB, '0.59*MiB', '{0}*bit'.format(0.59 * 1024 * 1024 * 8))
+        0.59 * MiB, '0.59 MiB', '{0}*bit'.format(0.59 * 1024 * 1024 * 8))
     # fractions with multiple decimal places
-    _assert_str_repr_equals(9122 * byte, '8.91*KiB', '9122*byte')
+    _assert_str_repr_equals(9122 * byte, '8.91 KiB', '9122*byte')
     _assert_str_repr_equals(
-        23124232 * byte, '22.05*MiB', '23124232*byte')
+        23124232 * byte, '22.05 MiB', '23124232*byte')
     _assert_str_repr_equals(
-        58918694226 * byte, '54.87*GiB', '58918694226*byte')
+        58918694226 * byte, '54.87 GiB', '58918694226*byte')
     _assert_str_repr_equals(
-        213124232 * byte, '0.2*GiB', '213124232*byte')
+        213124232 * byte, '0.2 GiB', '213124232*byte')
     # test *B instead of only *iB
     _assert_str_repr_equals(
-        0.5 * MB - bit, '0.5*MB', '{0}*bit'.format(int((0.5 * MB).bits - 1)))
-    _assert_str_repr_equals(0.5 * MB, '0.5*MB', '500*KB')
-    _assert_str_repr_equals(2 * MB, '2*MB', '2*MB')
+        0.5 * MB - bit, '0.5 MB', '{0}*bit'.format(int((0.5 * MB).bits - 1)))
+    _assert_str_repr_equals(0.5 * MB, '0.5 MB', '500*KB')
+    _assert_str_repr_equals(2 * MB, '2 MB', '2*MB')
 
-    _assert_str_repr_equals(0 * bit, '0*bit', '0*bit')
+    _assert_str_repr_equals(0 * bit, '0 bit', '0*bit')
 
 
 def _assert_str_repr_equals(obj, str_value, repr_value):
