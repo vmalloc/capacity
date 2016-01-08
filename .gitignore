@@ -6,3 +6,4 @@ dist
 capacity.egg-info
 .tox
 .env
+.cache
