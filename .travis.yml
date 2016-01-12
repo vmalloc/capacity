@@ -1,15 +1,20 @@
 language: python
 sudo: false
 python:
-  - 2.7
-  - 3.3
-  - 3.4
-  - 3.5
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: 
-  - pip install pytest pytest-cov coveralls
-  - python setup.py develop
-# command to run tests, e.g. python setup.py test
+- 2.7
+- 3.3
+- 3.4
+- 3.5
+install:
+- pip install pytest pytest-cov coveralls
+- python setup.py develop
 script: py.test --cov capacity
-after_success:
-  coveralls
+after_success: coveralls
+deploy:
+  provider: pypi
+  user: vmalloc
+  password:
+    secure: BgP6TlUhSPGZNJvIaH0I5FEVAC/ZAcgL2/gajdAeiq+XyT7sQbnT2+B260X4+EpB2+XuHJeaZ3eu81PfW2OG16Co3tYDwjZ/8dmD3eQinWl2x+CD6ei/eVB6kt9N8GyRjueo1YocAVg569pgyg66TVoKX1tFWez/B6fhwILG2SU=
+  on:
+    tags: true
+    repo: vmalloc/capacity
