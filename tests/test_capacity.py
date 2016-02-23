@@ -1,5 +1,6 @@
+# pylint: disable=superfluous-parens, misplaced-comparison-constant
 import pytest
-from capacity import *
+from capacity import MiB, byte, GiB, KiB, Capacity, bit, from_string, MB, GB
 from numbers import Integral
 from operator import truediv
 
@@ -94,12 +95,13 @@ def test_simple_textual_representation():
 
 
 def test_representation():
+    _assert_str_repr_equals(1907349 * MiB, '2 TB', '1907349*MiB')
     _assert_str_repr_equals(110 * MiB, '110 MiB', '110*MiB')
-    _assert_str_repr_equals(0.5 * MiB, '0.5 MiB', '512*KiB')
+    _assert_str_repr_equals(0.5 * MiB, '512 KiB', '512*KiB')
     _assert_str_repr_equals(
-        0.5 * MiB + bit, '0.5 MiB', '{0}*bit'.format(int((0.5 * MiB).bits + 1)))
+        0.5 * MiB + bit, '512 KiB', '{0}*bit'.format(int((0.5 * MiB).bits + 1)))
     _assert_str_repr_equals(
-        0.5 * MiB - bit, '0.5 MiB', '{0}*bit'.format(int((0.5 * MiB).bits - 1)))
+        0.5 * MiB - bit, '512 KiB', '{0}*bit'.format(int((0.5 * MiB).bits - 1)))
     _assert_str_repr_equals(2 * MiB, '2 MiB', '2*MiB')
     _assert_str_repr_equals(
         GiB - bit, '1 GiB', '{0}*bit'.format(GiB.bits - 1))
@@ -121,8 +123,8 @@ def test_representation():
         213124232 * byte, '0.2 GiB', '213124232*byte')
     # test *B instead of only *iB
     _assert_str_repr_equals(
-        0.5 * MB - bit, '0.5 MB', '{0}*bit'.format(int((0.5 * MB).bits - 1)))
-    _assert_str_repr_equals(0.5 * MB, '0.5 MB', '500*KB')
+        0.5 * MB - bit, '500 KB', '{0}*bit'.format(int((0.5 * MB).bits - 1)))
+    _assert_str_repr_equals(0.5 * MB, '500 KB', '500*KB')
     _assert_str_repr_equals(2 * MB, '2 MB', '2*MB')
 
     _assert_str_repr_equals(0 * bit, '0 bit', '0*bit')
@@ -220,6 +222,7 @@ def test_rounddown():
 
 
 def test_invalid_arithmetic():
+    # pylint: disable=pointless-statement
     size = 668 * bit
 
     with pytest.raises(TypeError):

@@ -1,9 +1,13 @@
 from __future__ import division
+import collections
 import decimal
 import math
 import re
 import operator
 from numbers import Number
+
+
+_StrCandidate = collections.namedtuple('StrCandidate', ('avoid', 'unit_sort_key', 'str_length', 'str', 'unit_name'))
 
 
 class Capacity(object):
@@ -34,7 +38,7 @@ class Capacity(object):
             return False
 
     def __ne__(self, other):
-        return not (self == other)
+        return not (self == other)  # pylint: disable=superfluous-parens
 
     def __lt__(self, other):
         return self._compare(other) < 0
@@ -133,15 +137,12 @@ class Capacity(object):
     # Representation
 
     def __str__(self):
-        if self < byte:
+        if self < byte:  # pylint: disable=undefined-variable
             return self._format_as_number_of_bits(with_asterisk=False)
         result = None
 
-        for name, unit in _SORTED_CAPACITIES:
-            if KiB < unit < self and self % unit == 0:
-                return '{0} {1}'.format(self // unit, name)
-
-        for name, unit in reversed((_SORTED_CAPACITIES)):
+        candidates = []
+        for name, unit in reversed(_SORTED_CAPACITIES):
             if unit * 0.1 > self:
                 continue
             unit_fraction = self / unit
@@ -150,16 +151,17 @@ class Capacity(object):
             # whole numbers should still be whole
             rounded_fraction = int(
                 rounded_fraction) if rounded_fraction.is_integer() else rounded_fraction
-            current_result = '{0} {1}'.format(rounded_fraction, name)
-            if result is not None:
-                # switch to current result if it is more compact (e.g. 0.5MB <
-                # 0.49MiB)
-                return result if len(result.split(" ")[0]) <= len(current_result.split(" ")[0]) else current_result
-            # continue with result to next iteration to check for better
-            # representation
-            result = current_result
-        if result is not None:
-            return result
+            rounded_fraction_str = str(rounded_fraction)
+            candidate = _StrCandidate(
+                avoid='.' in rounded_fraction_str or unit in (byte, bit),
+                unit_sort_key=-unit,
+                str_length=len(rounded_fraction_str),
+                str=rounded_fraction_str,
+                unit_name=name)
+            candidates.append(candidate)
+
+        if candidates:
+            return '{0.str} {0.unit_name}'.format(min(candidates))
         return self._format_as_number_of_bits()
 
     def _format_as_number_of_bits(self, with_asterisk=True):
@@ -186,7 +188,8 @@ class Capacity(object):
             for unit_name in _KNOWN_CAPACITIES:
                 if specifier.endswith(unit_name):
                     unit = _KNOWN_CAPACITIES[unit_name]
-                    formatter = "{{0:{0}}}".format(specifier[:-len(unit_name)]).format
+                    formatter = "{{0:{0}}}".format(
+                        specifier[:-len(unit_name)]).format
                     break
             else:
                 raise ValueError("Unknown specifier: {0}".format(specifier))
@@ -214,13 +217,13 @@ def _add_known_capacity(name, capacity):
     __all__.append(name)
 
 _add_known_capacity('bit', Capacity(1))
-_add_known_capacity('byte', 8 * bit)
+_add_known_capacity('byte', 8 * bit)  # pylint: disable=undefined-variable
 
 for multiplier, chain in [
     (1024, ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB']),
     (1000, ['KB', 'MB', 'GB', 'TB', 'PB', 'EB']),
 ]:
-    current = multiplier * byte
+    current = multiplier * byte  # pylint: disable=undefined-variable
     for name in chain:
         _add_known_capacity(name, current)
         current *= multiplier
@@ -233,6 +236,7 @@ _CAPACITY_PATTERN = re.compile(r"^([0-9\.]+)\s*\*?\s*(.+)$")
 _UNIT_ALIASES = {
     'b': 'byte',
 }
+
 
 def _get_known_capacity(s):
     return _KNOWN_CAPACITIES.get(s, None)
