@@ -139,8 +139,6 @@ class Capacity(object):
     def __str__(self):
         if self < byte:  # pylint: disable=undefined-variable
             return self._format_as_number_of_bits(with_asterisk=False)
-        result = None
-
         candidates = []
         for name, unit in reversed(_SORTED_CAPACITIES):
             if unit * 0.1 > self:
@@ -153,7 +151,7 @@ class Capacity(object):
                 rounded_fraction) if rounded_fraction.is_integer() else rounded_fraction
             rounded_fraction_str = str(rounded_fraction)
             candidate = _StrCandidate(
-                avoid='.' in rounded_fraction_str or unit in (byte, bit),
+                avoid='.' in rounded_fraction_str or unit in (byte, bit), # pylint: disable=undefined-variable
                 unit_sort_key=-unit,
                 str_length=len(rounded_fraction_str),
                 str=rounded_fraction_str,
