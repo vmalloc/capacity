@@ -7,7 +7,7 @@ import operator
 from numbers import Number
 
 
-_StrCandidate = collections.namedtuple('StrCandidate', ('avoid', 'unit_sort_key', 'str_length', 'str', 'unit_name'))
+_StrCandidate = collections.namedtuple('StrCandidate', ('weight', 'unit', 'str', 'unit_name'))
 
 
 class Capacity(object):
@@ -150,16 +150,16 @@ class Capacity(object):
             rounded_fraction = int(
                 rounded_fraction) if rounded_fraction.is_integer() else rounded_fraction
             rounded_fraction_str = str(rounded_fraction)
+
             candidate = _StrCandidate(
-                avoid='.' in rounded_fraction_str or unit in (byte, bit), # pylint: disable=undefined-variable
-                unit_sort_key=-unit,
-                str_length=len(rounded_fraction_str),
+                weight = -len(rounded_fraction_str) - int('.' in rounded_fraction_str),
+                unit=unit,
                 str=rounded_fraction_str,
                 unit_name=name)
             candidates.append(candidate)
 
         if candidates:
-            return '{0.str} {0.unit_name}'.format(min(candidates))
+            return '{0.str} {0.unit_name}'.format(max(candidates))
         return self._format_as_number_of_bits()
 
     def _format_as_number_of_bits(self, with_asterisk=True):
