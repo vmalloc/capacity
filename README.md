@@ -14,7 +14,7 @@ Capacity units can be created by using the built-in capacity objects:
 
 ```
 
-The above creates a capacity unit that represents 2GiB (2 * (1024<sup>3</sup>) bytes). Capacity already comes pre-loaded with `KiB`, `MiB, `GiB`, `TiB`, `EiB` for binary units, and `KB`, `MB`, `GB`, `TB`, `EB` for decimal units. You even have `byte` to denote a single byte.
+The above creates a capacity unit that represents 2GiB (2 * (1024<sup>3</sup>) bytes). Capacity already comes pre-loaded with `KiB`, `MiB`, `GiB`, `TiB`, `EiB` for binary units, and `KB`, `MB`, `GB`, `TB`, `EB` for decimal units. You even have `byte` to denote a single byte.
 
 Capacity objects can be added, multiplied, divided and more:
 
