@@ -7,3 +7,4 @@ capacity.egg-info
 .tox
 .env
 .cache
+.pytest_cache/

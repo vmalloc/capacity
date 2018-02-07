@@ -3,8 +3,11 @@ import collections
 import decimal
 import math
 import re
+import sys
 import operator
 from numbers import Number
+
+_PY2 = sys.version_info < (3, 0)
 
 
 _StrCandidate = collections.namedtuple('StrCandidate', ('weight', 'unit', 'str', 'unit_name'))
@@ -16,6 +19,8 @@ class Capacity(object):
         super(Capacity, self).__init__()
         if isinstance(bits, str):
             bits = from_string(bits).bits
+        if isinstance(bits, float) and bits == math.floor(bits):
+            bits = math.floor(bits)
         self.bits = bits
 
     def __nonzero__(self):
@@ -77,31 +82,34 @@ class Capacity(object):
         return (-self) + other
 
     def __div__(self, other):
-        if isinstance(other, Capacity):
-            return self._arithmetic_to_number(operator.div, other)
-        return self._arithmetic_to_capacity(operator.div, other, allow_nonzero_ints=True)
+        return self._arithmetic_div(other, operator.div) # pylint: disable=no-member
 
     def __truediv__(self, other):
+        return self._arithmetic_div(other, operator.truediv) # pylint: disable=no-member
+
+    def __floordiv__(self, other):
+        returned = self._arithmetic_div(other, operator.floordiv)
+        if not isinstance(returned, Capacity) and isinstance(returned, float):
+            returned = math.floor(returned)
+            if _PY2:
+                # In Python2, math.floor returns floats even for round values
+                returned = int(returned)
+        return returned
+
+    def _arithmetic_div(self, other, op):
         if isinstance(other, Capacity):
-            return self._arithmetic_to_number(operator.truediv, other)
-        return self._arithmetic_to_capacity(operator.truediv, other, allow_nonzero_ints=True)
+            return self._arithmetic_to_number(op, other)
+        return self._arithmetic_to_capacity(op, other, allow_nonzero_ints=True)
+
 
     def __rdiv__(self, other):
         if other == 0:
             return 0
         raise TypeError("Attempt to divide %r by Capacity" % (other,))
+
     __rtruediv__ = __rdiv__
     __rfloordiv__ = __rdiv__
 
-    def __floordiv__(self, other):
-        returned = self / other
-        if isinstance(other, Capacity):
-            returned = math.floor(returned)
-        else:
-            returned.bits = math.floor(returned.bits)
-        if isinstance(returned, Number):
-            returned = int(returned)
-        return returned
 
     def __mod__(self, other):
         if self == 0:
@@ -123,7 +131,7 @@ class Capacity(object):
     def rounddown(self, boundary):
         return (self // boundary) * boundary
 
-    def _arithmetic_to_number(self, operator, operand, allow_nonzero_ints=False):
+    def _arithmetic_to_number(self, operator, operand, allow_nonzero_ints=False): # pylint: disable=redefined-outer-name
         if not isinstance(operand, Capacity):
             if not allow_nonzero_ints and operand != 0:
                 raise TypeError(

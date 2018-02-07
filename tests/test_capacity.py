@@ -196,6 +196,7 @@ def test_mod():
 def test_floordiv():
     assert (((2 * MiB) + bit) // MiB) == 2
     assert isinstance((((2 * MiB) + bit) // MiB), Integral)
+    assert isinstance(MiB // MiB, Integral)
     assert ((2 * MiB) // 2) == MiB
     assert ((2 * MiB) // MiB) == 2
     assert isinstance(((2 * MiB) // MiB), Integral)
@@ -270,6 +271,16 @@ def test_invalid_patterns():
     check("1+2")
     check("1*2")
 
+
+def test_huge_long_values():
+    assert ((1000000000000000064 * byte) // byte) == 1000000000000000064
+
+
+def test_simple_str():
+    assert repr(1 * GiB) == '1*GiB'
+    assert str(1 * GiB) == '1 GiB'
+
+################################################################################
 
 def _assert_value_error(s):
     with pytest.raises(ValueError):
