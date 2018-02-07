@@ -3,8 +3,11 @@ import collections
 import decimal
 import math
 import re
+import sys
 import operator
 from numbers import Number
+
+_PY2 = sys.version_info < (3, 0)
 
 
 _StrCandidate = collections.namedtuple('StrCandidate', ('weight', 'unit', 'str', 'unit_name'))
@@ -86,8 +89,11 @@ class Capacity(object):
 
     def __floordiv__(self, other):
         returned = self._arithmetic_div(other, operator.floordiv)
-        if not isinstance(returned, Capacity):
+        if not isinstance(returned, Capacity) and isinstance(returned, float):
             returned = math.floor(returned)
+            if _PY2:
+                # In Python2, math.floor returns floats even for round values
+                returned = int(returned)
         return returned
 
     def _arithmetic_div(self, other, op):
