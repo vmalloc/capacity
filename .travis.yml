@@ -2,13 +2,12 @@ language: python
 sudo: false
 python:
 - 2.7
-- 3.3
-- 3.4
 - 3.5
+- 3.6
 install:
 - pip install pytest pytest-cov coveralls
-- python setup.py develop
-script: py.test --cov capacity
+- pip install -e .
+script: pytest --cov capacity
 after_success: coveralls
 deploy:
   provider: pypi
