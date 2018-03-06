@@ -286,6 +286,11 @@ def test_inf():
     assert inf * byte == inf * byte
     assert inf * byte > GiB
 
+def test_inf_repr_str():
+    inf = float('inf') * byte
+    assert 'inf' in str(inf).lower()
+    assert 'inf' in repr(inf).lower()
+
 
 
 ################################################################################

@@ -219,7 +219,7 @@ class Capacity(object):
         return formatter, value
 
     def __repr__(self):
-        if self.bits == 0:
+        if self.bits == 0 or self.bits == _INFINITY:
             return self._format_as_number_of_bits()
         for name, unit in reversed(_SORTED_CAPACITIES):
             if self % unit == 0:
