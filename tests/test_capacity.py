@@ -291,7 +291,9 @@ def test_inf_repr_str():
     assert 'inf' in str(inf).lower()
     assert 'inf' in repr(inf).lower()
 
-
+def test_compare_to_zero_capacity():
+    assert (0 * byte) < 2
+    assert (0 * byte) < GiB
 
 ################################################################################
 

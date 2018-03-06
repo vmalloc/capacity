@@ -9,11 +9,7 @@ from numbers import Number
 
 _PY2 = sys.version_info < (3, 0)
 
-if _PY2:
-    _INFINITY = float('inf')
-else:
-    _INFINITY = math.inf
-
+_INFINITY = float('inf')
 
 _StrCandidate = collections.namedtuple('StrCandidate', ('weight', 'unit', 'str', 'unit_name'))
 
@@ -39,9 +35,11 @@ class Capacity(object):
     # Equality and comparison, python 3 style. We don't rely on __cmp__ or cmp.
 
     def _compare(self, other):
-        if other != 0:
-            if not isinstance(other, Capacity):
-                raise TypeError('Trying to subtract {!r} from Capacity'.format(other))
+
+        if not isinstance(other, Capacity):
+            if self.bits != 0 and other != 0:
+                raise TypeError('Trying to compare {!r} to Capacity'.format(other))
+        else:
             other = other.bits
 
         if self.bits == other:
