@@ -9,6 +9,11 @@ from numbers import Number
 
 _PY2 = sys.version_info < (3, 0)
 
+if _PY2:
+    _INFINITY = float('inf')
+else:
+    _INFINITY = math.inf
+
 
 _StrCandidate = collections.namedtuple('StrCandidate', ('weight', 'unit', 'str', 'unit_name'))
 
@@ -19,7 +24,7 @@ class Capacity(object):
         super(Capacity, self).__init__()
         if isinstance(bits, str):
             bits = from_string(bits).bits
-        if isinstance(bits, float) and bits == math.floor(bits):
+        if isinstance(bits, float) and bits != _INFINITY and bits == math.floor(bits):
             bits = math.floor(bits)
         self.bits = bits
 
@@ -34,7 +39,16 @@ class Capacity(object):
     # Equality and comparison, python 3 style. We don't rely on __cmp__ or cmp.
 
     def _compare(self, other):
-        return (self - other).bits
+        if other != 0:
+            if not isinstance(other, Capacity):
+                raise TypeError('Trying to subtract {!r} from Capacity'.format(other))
+            other = other.bits
+
+        if self.bits == other:
+            return 0
+        if self.bits > other:
+            return 1
+        return -1
 
     def __eq__(self, other):
         try:
