@@ -1,4 +1,5 @@
 # pylint: disable=superfluous-parens, misplaced-comparison-constant
+import math
 import pytest
 from capacity import MiB, byte, GiB, KiB, Capacity, bit, from_string, MB, GB, PiB
 from numbers import Integral
@@ -279,6 +280,13 @@ def test_huge_long_values():
 def test_simple_str():
     assert repr(1 * GiB) == '1*GiB'
     assert str(1 * GiB) == '1 GiB'
+
+def test_inf():
+    inf = float('inf')
+    assert inf * byte == inf * byte
+    assert inf * byte > GiB
+
+
 
 ################################################################################
 
