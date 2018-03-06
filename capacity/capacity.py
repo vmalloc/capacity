@@ -9,11 +9,7 @@ from numbers import Number
 
 _PY2 = sys.version_info < (3, 0)
 
-if _PY2:
-    _INFINITY = float('inf')
-else:
-    _INFINITY = math.inf
-
+_INFINITY = float('inf')
 
 _StrCandidate = collections.namedtuple('StrCandidate', ('weight', 'unit', 'str', 'unit_name'))
 
