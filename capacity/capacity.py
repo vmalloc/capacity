@@ -146,14 +146,17 @@ class Capacity(object):
     def _arithmetic_to_number(self, operator, operand, allow_nonzero_ints=False): # pylint: disable=redefined-outer-name
         if not isinstance(operand, Capacity):
             if not allow_nonzero_ints and operand != 0:
-                raise TypeError(
-                    "Attempt to perform %s operation between capacity and %r" %
-                    (operator.__name__, operand))
+                return NotImplemented
+            if not isinstance(operand, Number):
+                return NotImplemented
             operand = Capacity(operand)
         return operator(self.bits, operand.bits)
 
     def _arithmetic_to_capacity(self, *args, **kwargs):
-        return Capacity(self._arithmetic_to_number(*args, **kwargs))
+        returned = self._arithmetic_to_number(*args, **kwargs)
+        if returned is NotImplemented:
+            return returned
+        return Capacity(returned)
     # Representation
 
     def __str__(self):
