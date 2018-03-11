@@ -1,5 +1,6 @@
 # pylint: disable=superfluous-parens, misplaced-comparison-constant
 import math
+import operator
 import pytest
 from capacity import MiB, byte, GiB, KiB, Capacity, bit, from_string, MB, GB, PiB
 from numbers import Integral
@@ -296,3 +297,29 @@ def test_inf_repr_str():
 def test_compare_to_zero_capacity():
     assert (0 * byte) < 2
     assert (0 * byte) < GiB
+
+@pytest.mark.parametrize('op', [operator.floordiv, operator.sub, operator.add, operator.mul, operator.truediv])
+def test_floordiv_other_class(op):
+
+    expected_value = object()
+
+    class OtherClass(object):
+
+        def __rfloordiv__(self, other):
+            return expected_value
+
+        def __radd__(self, other):
+            return expected_value
+
+        def __rsub__(self, other):
+            return expected_value
+
+        def __rmul__(self, other):
+            return expected_value
+
+        def __rtruediv__(self, other):
+            return expected_value
+        __rdiv__ = __rtruediv__
+
+    result = op(KiB, OtherClass())
+    assert result is expected_value
