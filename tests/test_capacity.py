@@ -5,6 +5,8 @@ from capacity import MiB, byte, GiB, KiB, Capacity, bit, from_string, MB, GB, Pi
 from numbers import Integral
 from operator import truediv
 
+from .utils import assert_value_error
+
 
 def test_0_modulo():
     assert (0 % byte) == 0
@@ -264,7 +266,7 @@ def test_from_string(string_and_value):
 
 
 def test_invalid_patterns():
-    check = _assert_value_error
+    check = assert_value_error
     check("2")
     check("bla")
     check("GIB")
@@ -294,9 +296,3 @@ def test_inf_repr_str():
 def test_compare_to_zero_capacity():
     assert (0 * byte) < 2
     assert (0 * byte) < GiB
-
-################################################################################
-
-def _assert_value_error(s):
-    with pytest.raises(ValueError):
-        from_string(s)
