@@ -76,21 +76,24 @@ def test_equality_to_zero():
 def test_new_style_formatting():
     assert "{0}".format(3 * GiB) == str(3 * GiB)
     assert "{0!r}".format(3 * GiB) == repr(3 * GiB)
-    assert "{0:GiB}".format(3 * GiB) == "3"
+    assert "{0:GiB}".format(3 * GiB) == "3.0"
     with pytest.raises(ValueError):
         assert "{0:kjdkj}".format(3 * GiB)
-    assert u"{0:byte}".format(100 * byte) == u"100"
+    assert u"{0:byte}".format(100 * byte) == u"100.0"
 
 
 def test_new_style_with_specifiers():
-    assert "{0:<5MiB}".format(MiB) == "1    "
-    assert "{0:>5MiB}".format(MiB) == "    1"
-    assert "{0:^5MiB}".format(MiB) == "  1  "
-    assert "{0:05MiB}".format(MiB) == "00001"
+    assert "{0:<5MiB}".format(MiB) == "1.0  "
+    assert "{0:>5MiB}".format(MiB) == "  1.0"
+    assert "{0:^5MiB}".format(MiB) == " 1.0 "
+    assert "{0:05MiB}".format(MiB) == "001.0"
+    assert "{0:gGiB}".format(3 * GiB) == "3"
+    assert "{0:.2fGiB}".format(3 * GiB) == "3.00"
+    assert "{0:+.2fGiB}".format(3 * GiB) == "+3.00"
 
 
 def test_new_style_with_unit():
-    assert "{0:<5MiB!}".format(MiB) == "1MiB "
+    assert "{0:<10MiB!}".format(MiB) == "1.0MiB    "
 
 
 def test_simple_textual_representation():

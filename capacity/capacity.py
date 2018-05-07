@@ -214,7 +214,7 @@ class Capacity(object):
                     break
             else:
                 raise ValueError("Unknown specifier: {0}".format(specifier))
-        value = self // unit
+        value = self / unit
         if include_unit:
             value = "{0}{1}".format(value, unit_name)
         return formatter, value
