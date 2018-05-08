@@ -48,10 +48,10 @@ Formatting is easy:
 ```python
 >>> size = 1234567 * byte
 >>> "In megabytes, we have {0:MB}".format(size)
-'In megabytes, we have 1'
+'In megabytes, we have 1.234567'
 
 >>> "We have {0:MB!}".format(size) # include unit in output
-'We have 1MB'
+'We have 1.234567MB'
 
 ```
 
