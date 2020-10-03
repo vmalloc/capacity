@@ -1,1 +1,4 @@
-__version__ = "1.3.14"
+import pkg_resources
+
+
+__version__ = pkg_resources.get_distribution('capacity').version

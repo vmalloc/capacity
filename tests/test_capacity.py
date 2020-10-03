@@ -2,11 +2,15 @@
 import math
 import operator
 import pytest
-from capacity import MiB, byte, GiB, KiB, Capacity, bit, from_string, MB, GB, PiB
+from capacity import MiB, byte, GiB, KiB, Capacity, bit, from_string, MB, GB, PiB, __version__
 from numbers import Integral
 from operator import truediv
 
 from .utils import assert_value_error
+
+
+def test_version():
+    assert isinstance(__version__.__version__, str)
 
 
 def test_0_modulo():
