@@ -8,3 +8,4 @@ capacity.egg-info
 .env
 .cache
 .pytest_cache/
+.eggs

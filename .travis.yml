@@ -1,13 +1,11 @@
 language: python
 sudo: false
 python:
-  - 2.7
-  - 3.4
-  - 3.5
   - 3.6
+  - 3.7
+  - 3.8
 install:
-  - pip install pytest pytest-cov coveralls
-  - pip install -e .
+  - pip install -e ".[testing]"
 script: pytest --cov capacity
 after_success: coveralls
 deploy:
